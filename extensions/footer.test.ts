@@ -33,13 +33,20 @@ describe("formatFooter", () => {
     }
   };
 
-  it("renders all enabled categories", () => {
+  it("renders all enabled categories as compact pipe-separated", () => {
     const result = formatFooter(baseData, allOn);
-    expect(result).toContain("AGENTS");
-    expect(result).toContain("Skills");
-    expect(result).toContain("MCP");
-    expect(result).toContain("Chat");
+    // Short codes: A|Sy|Sk|G|T|M|B|C|F
+    expect(result).toContain("A1.5");
+    expect(result).toContain("Sy3.6");
+    expect(result).toContain("Sk1.5");
+    expect(result).toContain("G0.6");
+    expect(result).toContain("T2.3");
+    expect(result).toContain("M1.6");
+    expect(result).toContain("B0.7");
+    expect(result).toContain("C22.5");
+    expect(result).toContain("F71.7");
     expect(result).toContain("claude-sonnet-4");
+    expect(result).toContain("200K");
   });
 
   it("skips disabled categories", () => {
@@ -58,11 +65,13 @@ describe("formatFooter", () => {
       }
     };
     const result = formatFooter(baseData, partial);
-    expect(result).toContain("AGENTS");
-    expect(result).toContain("Skills");
-    expect(result).toContain("MCP");
-    expect(result).not.toContain("Guide:");
-    expect(result).not.toContain("Core:");
+    expect(result).toContain("A1.5");
+    expect(result).toContain("Sk1.5");
+    expect(result).toContain("M1.6");
+    expect(result).toContain("C22.5");
+    expect(result).not.toContain("Sy");
+    expect(result).not.toContain("G0");
+    expect(result).not.toContain("B0");
   });
 
   it("returns empty when footer disabled", () => {
@@ -71,20 +80,12 @@ describe("formatFooter", () => {
     expect(result).toBe("");
   });
 
-  it("shows proportional bars with padding", () => {
+  it("shows used% / windowK format", () => {
     const result = formatFooter(baseData, allOn);
-    const chatSegment = result.match(/Chat:[^\]]+/)?.[0] ?? "";
-    const agentsSegment = result.match(/AGENTS:[^\]]+/)?.[0] ?? "";
-    const chatBars = (chatSegment.match(/█/g) ?? []).length;
-    const agentsBars = (agentsSegment.match(/█/g) ?? []).length;
-    expect(chatBars).toBeGreaterThan(agentsBars);
-    // Each bar should have ░ padding to fill 12 chars
-    expect(result).toContain("░");
-  });
-
-  it("includes context window size in footer", () => {
-    const result = formatFooter(baseData, allOn);
+    // used = everything except free
     expect(result).toContain("200K");
+    // Should have pipe separators
+    expect(result).toContain("|");
   });
 });
 

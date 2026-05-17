@@ -33,6 +33,19 @@ export const CATEGORY_LABELS: Record<FooterCategory, string> = {
   free: "Free"
 };
 
+/** Short codes for compact footer — 1-2 chars max */
+export const SHORT_LABELS: Record<FooterCategory, string> = {
+  agents: "A",
+  system: "Sy",
+  skills: "Sk",
+  guidelines: "G",
+  tools: "T",
+  mcp: "M",
+  builtin: "B",
+  conversation: "C",
+  free: "F"
+};
+
 export interface FooterData {
   model?: string;
   contextWindow?: number;
@@ -48,29 +61,29 @@ export function formatFooter(data: FooterData, state: FooterState): string {
   if (!state.enabled) return "";
 
   const window = data.contextWindow ?? 1;
-  const parts: string[] = [];
+  const segments: string[] = [];
 
   for (const category of FOOTER_CATEGORIES) {
     if (!state.categories[category]) continue;
     const tokens = data.categories[category]?.tokens;
     if (tokens == null) continue;
 
-    const label = CATEGORY_LABELS[category];
-    const pct = tokens / window;
-    const barLen = Math.max(1, Math.round(pct * 12));
-    const clampedBarLen = Math.min(12, barLen);
-    const bar = "█".repeat(clampedBarLen) + "░".repeat(12 - clampedBarLen);
-    const fmt = tokens >= 1000 ? `${(tokens / 1000).toFixed(1)}K` : `${tokens}`;
-    parts.push(`${label}:${fmt}${bar}${(pct * 100).toFixed(1)}%`);
+    const code = SHORT_LABELS[category];
+    const pct = (tokens / window) * 100;
+    segments.push(`${code}${pct.toFixed(1)}`);
   }
 
-  if (parts.length === 0) return "";
+  if (segments.length === 0) return "";
 
-  const modelParts: string[] = [];
-  if (data.model) modelParts.push(data.model);
-  if (data.contextWindow) modelParts.push(`${(data.contextWindow / 1000).toFixed(0)}K`);
-  const suffix = modelParts.length > 0 ? ` · ${modelParts.join(" ")}` : "";
-  return `[${parts.join("] [")}]${suffix}`;
+  // Compute used% = everything except Free
+  const usedTokens = FOOTER_CATEGORIES
+    .filter((c) => c !== "free")
+    .reduce((sum, c) => sum + (data.categories[c]?.tokens ?? 0), 0);
+  const usedPct = window > 0 ? ((usedTokens / window) * 100).toFixed(1) : "0.0";
+  const windowK = data.contextWindow ? `${(data.contextWindow / 1000).toFixed(0)}K` : "?";
+
+  const suffix = data.model ? ` ${data.model}` : "";
+  return `${segments.join("|")} ${usedPct}%/${windowK}${suffix}`;
 }
 
 export type ParseResult =
