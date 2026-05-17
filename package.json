@@ -1,0 +1,47 @@
+{
+  "name": "pi-ctx-budget",
+  "version": "0.1.0",
+  "description": "Context window budget display for pi — /ctx-budget command + toggleable footer",
+  "author": "buihongduc132",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buihongduc132/pi-ctx-budget.git"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi",
+    "pi-coding-agent",
+    "context",
+    "budget"
+  ],
+  "files": [
+    "extensions/**/*.ts",
+    "skills/**/*",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "check": "npm run typecheck && npm run test:coverage",
+    "smoke-test": "node --experimental-strip-types scripts/smoke-test.ts"
+  },
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills"]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.1",
+    "@vitest/coverage-v8": "^3.2.1",
+    "typescript": "^5.8.0"
+  }
+}
