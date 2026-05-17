@@ -190,7 +190,7 @@ function buildCompactFooterLine(contextWindow: number): string {
   if (!breakdown) return "";
 
   const window = contextWindow || 200_000;
-  const pct = (tokens: number) => window > 0 ? ((tokens / window) * 100).toFixed(1) : "0.0";
+  const pct = (tokens: number) => window > 0 ? String(Math.round((tokens / window) * 100)) : "0";
 
   // System = total systemPrompt tokens (internal pi prompt + ALL contextFiles)
   const systemTokens = breakdown.systemPrompt.tokens;
