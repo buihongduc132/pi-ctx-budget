@@ -233,7 +233,7 @@ function buildCompactFooterLine(contextWindow: number): string {
   const windowK = `${Math.round(window / 1000)}K`;
   const model = lastModel ? ` ${lastModel}` : "";
 
-  return `Sys${pct(systemTokens)} A${pct(agentsTokens)} Sk${pct(skillsTokens)} T${pct(toolsPlusMcp)} B${pct(builtinTokens)} C${pct(conversationTokens)} · ${usedPct}%/${windowK}${model}`;
+  return `Sys${pct(systemTokens)} A${pct(agentsTokens)} Sk${pct(skillsTokens)} T${pct(toolsPlusMcp)} · ${usedPct}%/${windowK}${model}`;
 }
 
 // ── Budget / Renderer helpers ───────────────────────────────────────
