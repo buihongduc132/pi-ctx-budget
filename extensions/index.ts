@@ -9,6 +9,11 @@ import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 
 import { computeBreakdown, type Breakdown, type SourceInput } from "./estimator";
 import { formatBudget, type BudgetData } from "./renderer";
+import {
+  loadConfig,
+  writeGlobalConfig,
+  type CtxBudgetConfig,
+} from "./config";
 
 let cachedBreakdown: Breakdown | null = null;
 let lastUsageTokens = 0;
@@ -16,12 +21,22 @@ let lastContextWindow = 0;
 let lastModel = "unknown";
 let lastCtx: ExtensionContext | null = null;
 let footerEnabled = false;
+let configLoaded = false;
 
 export default function (pi: ExtensionAPI) {
   pi.on("before_agent_start", (event, ctx) => {
     void Promise.resolve()
       .then(() => {
         lastCtx = ctx;
+
+        // Load persisted config on first turn
+        if (!configLoaded) {
+          configLoaded = true;
+          const cfg = loadConfig(ctx.cwd);
+          footerEnabled = cfg.footer;
+          if (footerEnabled) applyFooter(ctx);
+        }
+
         const sourceInput = buildSourceInput(
           event.systemPrompt,
           event.systemPromptOptions,
@@ -61,14 +76,16 @@ export default function (pi: ExtensionAPI) {
         const sub = trimmed.slice("footer".length).trim().toLowerCase();
         if (sub === "on") {
           footerEnabled = true;
+          writeGlobalConfig({ footer: true });
           applyFooter(ctx);
-          ctx.ui.notify("ctx-budget footer enabled", "info");
+          ctx.ui.notify("ctx-budget footer enabled (persisted)", "info");
           return;
         }
         if (sub === "off") {
           footerEnabled = false;
+          writeGlobalConfig({ footer: false });
           applyFooter(ctx);
-          ctx.ui.notify("ctx-budget footer disabled (default restored)", "info");
+          ctx.ui.notify("ctx-budget footer disabled (persisted)", "info");
           return;
         }
         ctx.ui.notify(
