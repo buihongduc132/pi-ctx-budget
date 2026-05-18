@@ -15,10 +15,15 @@
     "pi",
     "pi-coding-agent",
     "context",
-    "budget"
+    "budget",
+    "token-usage",
+    "context-window",
+    "footer",
+    "token-counting"
   ],
   "files": [
     "extensions/**/*.ts",
+    "!extensions/**/*.test.ts",
     "skills/**/*",
     "README.md",
     "CHANGELOG.md",

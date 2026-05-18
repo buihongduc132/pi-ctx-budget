@@ -16,7 +16,7 @@ export const DEFAULT_CONFIG: CtxBudgetConfig = {
 
 // ── Helpers ──
 
-function deepMerge<T extends Record<string, unknown>>(
+function deepMerge<T>(
   base: T,
   override: Partial<T> | null | undefined,
 ): T {
@@ -24,7 +24,7 @@ function deepMerge<T extends Record<string, unknown>>(
   const result = { ...base };
   for (const key of Object.keys(override) as (keyof T)[]) {
     if (override[key] !== undefined) {
-      (result as Record<string, unknown>)[key as string] = override[key];
+      (result as unknown as Record<string, unknown>)[key as string] = override[key];
     }
   }
   return result;
