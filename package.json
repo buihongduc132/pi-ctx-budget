@@ -1,7 +1,7 @@
 {
   "name": "pi-ctx-budget",
   "version": "0.1.0",
-  "description": "Context window budget display for pi — /ctx-budget command + toggleable footer",
+  "description": "Context window budget display for pi \u2014 /ctx-budget command + toggleable footer",
   "author": "buihongduc132",
   "license": "MIT",
   "type": "module",
@@ -33,8 +33,12 @@
     "smoke-test": "node --experimental-strip-types scripts/smoke-test.ts"
   },
   "pi": {
-    "extensions": ["./extensions"],
-    "skills": ["./skills"]
+    "extensions": [
+      "./extensions"
+    ],
+    "skills": [
+      "./skills"
+    ]
   },
   "peerDependencies": {
     "@mariozechner/pi-coding-agent": "*"
