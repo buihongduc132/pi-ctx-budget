@@ -16,10 +16,7 @@
     "pi-coding-agent",
     "context",
     "budget",
-    "token-usage",
-    "context-window",
-    "footer",
-    "token-counting"
+    "tokens"
   ],
   "files": [
     "extensions/**/*.ts",
